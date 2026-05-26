@@ -1,5 +1,5 @@
-Ansible Role for Updating OpenSSH
-=========
+# Ansible Role for Updating OpenSSH
+**Author/Maintainer:** Josh Murphy
 
 An extremely basic role to update openssh on RedHat and Debian to avoid outdated openssh versions.
 
@@ -11,7 +11,7 @@ N/A
 Role Variables
 --------------
 
-# rl_update_only - Whether to update only, or to install the missing openssh packages. Leave true if you don't want openssh-client installed.
+rl_update_only - Whether to update only, or to install the missing openssh packages. Leave true if you don't want openssh-client installed.
 
 Dependencies
 ------------
@@ -21,20 +21,23 @@ A list of other roles hosted on Galaxy should go here, plus any details in regar
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
+```yaml
 - hosts: all
   become: yes
 
   roles:
     - role: openssh-update
+```
 
 License
 -------
 
 MIT
 
-Author Information
-------------------
+### From Ansible Galaxy
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+```bash
+ansible-galaxy install crowjm64.openssh_update
+```
+
+This role was created and is maintained by **[CrowJM64](https://github.com/CrowJM64)**.
