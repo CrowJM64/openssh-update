@@ -1,0 +1,21 @@
+---
+# tasks file for ssh-update
+ - name: Update OpenSSH (RedHat)
+   ansible.builtin.dnf:
+     name:
+       - openssh
+       - openssh-server
+       - openssh-clients
+     state: latest
+     update_only: "{{ rh_update_only }}"
+   when:
+      - ansible_os_family == "RedHat"
+
+- name: Update OpenSSH (Debian)
+  ansible.builtin.apt:
+    name:
+      - openssh-server
+      - openssh-client
+    state: latest
+  when:
+     - ansible_os_family == "Debian"
