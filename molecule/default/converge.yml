@@ -7,4 +7,4 @@
   tasks:
     - name: Include ssh-update
       ansible.builtin.include_role:
-        name: ssh-update
+        name: openssh-update

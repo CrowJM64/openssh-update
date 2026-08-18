@@ -5,6 +5,22 @@
   hosts: instance
   gather_facts: false # Quicker, if you do not need facts
   tasks:
-    - name: Assert something
-      ansible.builtin.assert:
-        that: true
+    - name: Check SSH service is active (RedHat)
+      ansible.builtin.systemd:
+        name: sshd
+        state: started
+      check_mode: true
+      register: sshd_svc
+      failed_when: sshd_svc.status.ActiveState is not defined
+      when:
+        - ansible_os_family == "RedHat"
+
+    - name: Check SSH service is active (Debian)
+      ansible.builtin.systemd:
+        name: ssh
+        state: started
+      check_mode: true
+      register: ssh_svc
+      failed_when: ssh_svc.status.ActiveState is not defined
+      when:
+        - ansible_os_family == "Debian"

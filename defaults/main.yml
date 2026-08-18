@@ -1,3 +1,3 @@
 ---
 # defaults file for ssh-update
-rh_update_only = "yes" # Wheter to only update and not install a package if its missing. (yes/no)
+rh_update_only: "yes" # Whether to only update and not install a package if its missing. (yes/no)
