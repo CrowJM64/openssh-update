@@ -11,7 +11,7 @@ N/A
 Role Variables
 --------------
 
-rl_update_only - Whether to update only, or to install the missing openssh packages. Leave true if you don't want openssh-client installed.
+rl_update_only - Whether to update only on RedHat, or to install the missing openssh packages. Leave true if you don't want openssh-client installed.
 
 Dependencies
 ------------

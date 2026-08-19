@@ -1,45 +1,46 @@
 ---
 # tasks file for ssh-update
- - name: Install python in Fedora
-   ansible.builtin.raw: dnf install -y python3 python3-libdnf5
-   changed_when: false
-   when: 
-     - ansible_distribution == "Fedora"
- 
- - name: Update OpenSSH (RedHat)
-   ansible.builtin.package:
-     name:
-       - openssh
-       - openssh-server
-       - openssh-clients
-     state: latest
-     update_only: "{{ rh_update_only }}"
-   when:
-      - ansible_os_family == "RedHat"
+- name: Update OpenSSH (RedHat)
+  ansible.builtin.package:
+    name:
+      - openssh
+      - openssh-server
+      - openssh-clients
+    state: latest # noqa package-latest
+    update_only: "{{ rh_update_only }}"
+  when:
+    - ansible_os_family == "RedHat"
+    - ansible_distribution != "Fedora"
 
- - name: Update apt cache
-   ansible.builtin.apt:
-     update_cache: yes
-     cache_valid_time: 3600
-   become: true
-   when:
-     - ansible_os_family == "Debian"
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+  when:
+    - ansible_os_family == "Debian"
 
- - name: Update OpenSSH (Debian)
-   ansible.builtin.apt:
-     name:
-       - openssh-server
-       - openssh-client
-     state: latest
-   when:
-     - ansible_os_family == "Debian"
+- name: Update OpenSSH (Debian)
+  ansible.builtin.apt:
+    name:
+      - openssh-server
+      - openssh-client
+    state: latest # noqa package-latest
+  when:
+    - ansible_os_family == "Debian"
 
- - name: Update OpenSSH (Suse)
-   ansible.builtin.package:
-     name:
-       - openssh
-       - openssh-server
-       - openssh-clients
-     state: latest
-   when:
-      - ansible_os_family == "Suse"
+- name: Update OpenSSH (Fedora)
+  ansible.builtin.raw: dnf install -y openssh openssh-server
+  changed_when: false
+  when:
+    - ansible_distribution == "Fedora"
+
+- name: Update OpenSSH (Suse)
+  community.general.zypper:
+    name:
+      - openssh
+      - openssh-server
+      - openssh-clients
+    state: latest # noqa package-latest
+  when:
+    - ansible_os_family == "Suse"

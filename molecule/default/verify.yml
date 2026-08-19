@@ -3,7 +3,7 @@
 # Molecule calls this playbook with `molecule verify`.
 - name: Verify
   hosts: instance
-  gather_facts: false # Quicker, if you do not need facts
+  gather_facts: true # Quicker, if you do not need facts
   tasks:
     - name: Check SSH service is active (RedHat)
       ansible.builtin.systemd:
@@ -24,3 +24,32 @@
       failed_when: ssh_svc.status.ActiveState is not defined
       when:
         - ansible_os_family == "Debian"
+
+    - name: Check SSH version is latest available (RedHat)
+      ansible.builtin.dnf:
+        name:
+          - openssh
+          - openssh-server
+          - openssh-clients
+        state: latest
+      check_mode: true
+      register: sshd_ver
+#      failed_when: sshd_ver.results is not defined
+      when:
+        - ansible_os_family == "RedHat"
+
+    - name: Check SSH version is latest available (Debian)
+      ansible.builtin.apt:
+        name:
+          - openssh-server
+          - openssh-client
+        state: latest
+      check_mode: true
+      register: sshd_ver
+#      failed_when: sshd_ver.results is not defined
+      when:
+        - ansible_os_family == "Debian"
+
+    - name: 
+      ansible.builtin.debug:
+        msg: "sshd_ver: {{ sshd_ver.results }}"
