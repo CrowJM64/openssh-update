@@ -1,11 +1,11 @@
 galaxy_info:
-  author: Joshua Murphy
-  description: Simple role to update OpenSSH
+  author: Josh Murphy
   namespace: crowjm64
   role_name: openssh_update
-
   license: MIT
-  min_ansible_version: "2.1"
+  description: Simple role to update OpenSSH to the latest available version.
+  min_ansible_version: 2.15
+
 
   platforms:
     # RedHat
@@ -27,7 +27,7 @@ galaxy_info:
         - 2604
         - 2404
 
-  galaxy_tags: []
+  galaxy_tags:
     - deployment
     - automation
     - hardening

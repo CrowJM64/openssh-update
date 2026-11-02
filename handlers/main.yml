@@ -1,2 +1,11 @@
 ---
 # handlers file for ssh-update
+- name: Restart ssh (Debian)
+  ansible.builtin.service:
+    name: ssh
+    state: restarted
+  
+- name: Restart sshd (RedHat+Suse)
+  ansible.builtin.service:
+    name: sshd
+    state: restarted

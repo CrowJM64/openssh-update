@@ -2,28 +2,24 @@
 # Purpose: assert that the instance really ended up in the expected state.
 # Molecule calls this playbook with `molecule verify`.
 - name: Verify
-  hosts: instance
-  gather_facts: true # Quicker, if you do not need facts
+  hosts: all
+  gather_facts: true
   tasks:
-    - name: Check SSH service is active (RedHat)
+    - name: Check SSHD service is active (RedHat+Suse)
       ansible.builtin.systemd:
         name: sshd
-        state: started
-      check_mode: true
       register: sshd_svc
-      failed_when: sshd_svc.status.ActiveState is not defined
+      failed_when: sshd_svc.status.ActiveState != "active"
       when:
-        - ansible_os_family == "RedHat"
+        - ansible_facts['os_family'] in ["RedHat", "Suse"]
 
     - name: Check SSH service is active (Debian)
       ansible.builtin.systemd:
         name: ssh
-        state: started
-      check_mode: true
       register: ssh_svc
-      failed_when: ssh_svc.status.ActiveState is not defined
+      failed_when: ssh_svc.status.ActiveState != "active"
       when:
-        - ansible_os_family == "Debian"
+        - ansible_facts['os_family'] == "Debian"
 
     - name: Check SSH version is latest available (RedHat)
       ansible.builtin.dnf:
@@ -36,7 +32,7 @@
       register: sshd_ver
 #      failed_when: sshd_ver.results is not defined
       when:
-        - ansible_os_family == "RedHat"
+        - ansible_facts['os_family'] == "RedHat"
 
     - name: Check SSH version is latest available (Debian)
       ansible.builtin.apt:
@@ -48,8 +44,20 @@
       register: sshd_ver
 #      failed_when: sshd_ver.results is not defined
       when:
-        - ansible_os_family == "Debian"
+        - ansible_facts['os_family'] == "Debian"
+
+    - name: Check SSH version is latest available (Suse)
+      community.general.zypper:
+        name:
+          - openssh
+          - openssh-server
+          - openssh-clients
+        state: latest # noqa package-latest
+      check_mode: true
+      register: sshd_ver
+      when:
+        - ansible_facts['os_family'] == "Suse"
 
     - name: 
       ansible.builtin.debug:
-        msg: "sshd_ver: {{ sshd_ver.results }}"
+        msg: 'sshd_ver: "{{ sshd_ver }}"'
