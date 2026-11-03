@@ -4,7 +4,9 @@
 - name: Converge
   hosts: all
   gather_facts: true # Disable if your role does not rely on facts
+  vars:
+    rh_update_only: "no" # Whether to only update and not install a package if its missing. (yes/no)
   tasks:
-    - name: Include ssh-update
+    - name: Include openssh-update
       ansible.builtin.include_role:
         name: openssh-update

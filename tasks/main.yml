@@ -7,10 +7,10 @@
       - openssh-server
       - openssh-clients
     state: latest # noqa package-latest
-    update_only: "{{ rh_update_only }}"
+#    update_only: "{{ rh_update_only }}"
+  notify: Restart sshd (RedHat+Suse)
   when:
-    - ansible_os_family == "RedHat"
-    - ansible_distribution != "Fedora"
+    - ansible_facts['os_family'] == "RedHat"
 
 - name: Update apt cache
   ansible.builtin.apt:
@@ -18,7 +18,7 @@
     cache_valid_time: 3600
   become: true
   when:
-    - ansible_os_family == "Debian"
+    - ansible_facts['os_family'] == "Debian"
 
 - name: Update OpenSSH (Debian)
   ansible.builtin.apt:
@@ -26,14 +26,9 @@
       - openssh-server
       - openssh-client
     state: latest # noqa package-latest
+  notify: Restart ssh (Debian)
   when:
-    - ansible_os_family == "Debian"
-
-- name: Update OpenSSH (Fedora)
-  ansible.builtin.raw: dnf install -y openssh openssh-server
-  changed_when: false
-  when:
-    - ansible_distribution == "Fedora"
+    - ansible_facts['os_family'] == "Debian"
 
 - name: Update OpenSSH (Suse)
   community.general.zypper:
@@ -42,5 +37,6 @@
       - openssh-server
       - openssh-clients
     state: latest # noqa package-latest
+  notify: Restart sshd (RedHat+Suse)
   when:
-    - ansible_os_family == "Suse"
+    - ansible_facts['os_family'] == "Suse"
