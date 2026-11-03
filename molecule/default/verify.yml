@@ -27,24 +27,22 @@
           - openssh
           - openssh-server
           - openssh-clients
-        state: latest
+        state: latest # noqa package-latest
       check_mode: true
-      register: sshd_ver
-#      failed_when: sshd_ver.results is not defined
       when:
         - ansible_facts['os_family'] == "RedHat"
+      register: sshd_ver_rhel
 
     - name: Check SSH version is latest available (Debian)
       ansible.builtin.apt:
         name:
           - openssh-server
           - openssh-client
-        state: latest
+        state: latest # noqa package-latest
       check_mode: true
-      register: sshd_ver
-#      failed_when: sshd_ver.results is not defined
       when:
         - ansible_facts['os_family'] == "Debian"
+      register: sshd_ver_deb
 
     - name: Check SSH version is latest available (Suse)
       community.general.zypper:
@@ -54,10 +52,24 @@
           - openssh-clients
         state: latest # noqa package-latest
       check_mode: true
-      register: sshd_ver
       when:
         - ansible_facts['os_family'] == "Suse"
+      register: sshd_ver_suse
 
-    - name: 
-      ansible.builtin.debug:
-        msg: 'sshd_ver: "{{ sshd_ver }}"'
+    - name: Assert no updates available (RHEL)
+      ansible.builtin.assert:
+        that: not sshd_ver_rhel.changed
+      when:
+        - ansible_facts['os_family'] == "RedHat"
+
+    - name: Assert no updates available (Debian)
+      ansible.builtin.assert:
+        that: not sshd_ver_deb.changed
+      when:
+        - ansible_facts['os_family'] == "Debian"
+
+    - name: Assert no updates available (Suse)
+      ansible.builtin.assert:
+        that: not sshd_ver_suse.changed
+      when:
+        - ansible_facts['os_family'] == "Suse"
