@@ -40,21 +40,3 @@
   notify: Restart sshd (RedHat+Suse)
   when:
     - ansible_facts['os_family'] == "Suse"
-
-#- name: Enable and Restart SSHD with changes (RedHat+Suse)
-#  ansible.builtin.systemd:
-#    name: sshd
-#    state: restarted
-#    enabled: true
-#  when:
-#    - ansible_facts['os_family'] in ["RedHat", "Suse"]
-#    - sshd_updates.changed
-
-#- name: Enable and Restart SSH with changes (Debian)
-#  ansible.builtin.systemd:
-#    name: ssh
-#    state: restarted
-#    enabled: true
-#  when:
-#    - ansible_facts['os_family'] == "Debian"
-#    - ssh_updates.changed

@@ -9,7 +9,7 @@
       when: ansible_facts['distribution'] == "Fedora"
 
 # Force downgrading OpenSSH to test updating of packages.
-    - name: Install OpenSSH (RedHat)
+    - name: Install latest OpenSSH (RedHat)
       ansible.builtin.package:
         name:
           - openssh
@@ -25,41 +25,51 @@
       when:
         - ansible_facts['os_family'] == "RedHat"
 
-    - name: Update apt cache (Debian)
-      ansible.builtin.apt:
-        update_cache: true
-        cache_valid_time: 3600
-      become: true
-      when:
-        - ansible_facts['os_family'] == "Debian"
-
     - name: Downgrade OpenSSH (Debian13)
-      ansible.builtin.command:
-        cmd: apt-get install -y --allow-downgrades openssh-server=1:10.0p1-7+deb13u2 openssh-client=1:10.0p1-7+deb13u2 openssh-sftp-server=1:10.0p1-7+deb13u2
+      ansible.builtin.apt:
+        name: 
+          - openssh-server=1:10.0p1-7+deb13u2
+          - openssh-client=1:10.0p1-7+deb13u2
+          - openssh-sftp-server=1:10.0p1-7+deb13u2
+        allow_downgrade: yes
+        state: present
+        update_cache: yes
       when:
         - ansible_facts['distribution'] == "Debian" and ansible_facts['distribution_major_version'] == "13"
 
     - name: Downgrade OpenSSH (Debian12)
-      ansible.builtin.command:
-        cmd: apt-get install -y --allow-downgrades openssh-server=1:9.2p1-2+deb12u9 openssh-client=1:9.2p1-2+deb12u9 openssh-sftp-server=1:9.2p1-2+deb12u9
+      ansible.builtin.apt:
+        name: 
+          - openssh-server=1:9.2p1-2+deb12u9
+          - openssh-client=1:9.2p1-2+deb12u9
+          - openssh-sftp-server=1:9.2p1-2+deb12u9
+        allow_downgrade: yes
+        state: present
+        update_cache: yes
       when:
         - ansible_facts['distribution'] == "Debian" and ansible_facts['distribution_major_version'] == "12"
 
     - name: Downgrade OpenSSH (Ubuntu2604)
-      ansible.builtin.command:
-        cmd: apt-get install -y --allow-downgrades openssh-server=1:10.0p1-7+deb13u2 openssh-client=1:10.0p1-7+deb13u2 openssh-sftp-server=1:10.0p1-7+deb13u2
+      ansible.builtin.apt:
+        name: 
+          - openssh-server=1:10.2p1-2ubuntu3
+          - openssh-client=1:10.2p1-2ubuntu3
+          - openssh-sftp-server=1:10.2p1-2ubuntu3
+        allow_downgrade: yes
+        state: present
+        update_cache: yes
       when:
         - ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_major_version'] == "26"
 
     - name: Downgrade OpenSSH (Ubuntu2404)
-      ansible.builtin.command:
-        cmd: apt-get install -y --allow-downgrades openssh-server=1:10.2p1-2ubuntu3 openssh-client=1:10.2p1-2ubuntu3 openssh-sftp-server=1:10.2p1-2ubuntu3
-      when:
-        - ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_major_version'] == "24"
-
-    - name: Downgrade OpenSSH (Ubuntu2404)
-      ansible.builtin.command:
-        cmd: apt-get install -y --allow-downgrades openssh-server=1:9.6p1-3ubuntu13 openssh-client=1:9.6p1-3ubuntu13 openssh-sftp-server=1:9.6p1-3ubuntu13
+      ansible.builtin.apt:
+        name: 
+          - openssh-server=1:9.6p1-3ubuntu13
+          - openssh-client=1:9.6p1-3ubuntu13
+          - openssh-sftp-server=1:9.6p1-3ubuntu13
+        allow_downgrade: yes
+        state: present
+        update_cache: yes
       when:
         - ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_major_version'] == "24"
 
